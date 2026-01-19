@@ -24,8 +24,11 @@ jobs:
 
       - name: Generate Deployment Package
         run: |
-          mv target/*.jar app.jar
-          zip -r deploy.zip app.jar Procfile
+          ./mvnw clean package -DskipTests
+
+          cp target/*.jar app.jar
+
+          zip deploy.zip app.jar Procfile
 
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v21
