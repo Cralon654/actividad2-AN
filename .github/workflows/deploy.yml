@@ -1,38 +1,32 @@
-name: CI/CD Pipeline
+name: CI-CD Pipeline
 
 on:
   push:
     branches:
-      -main  # Se ejecuta en cada push a main
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout del código
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Configurar Java 17
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # 3. Compilar y Testear (CI) [cite: 44, 45]
       - name: Build with Maven
         run: ./mvnw clean package
 
-      # 4. Preparar artefacto para Elastic Beanstalk (CD)
-      # El requisito pide un deploy.zip con app.jar y Procfile
       - name: Generate Deployment Package
         run: |
-          mv target/*.jar app.jar  # Renombramos el jar generado a app.jar
-          zip -r deploy.zip app.jar Procfile # Creamos el zip requerido
+          mv target/*.jar app.jar
+          zip -r deploy.zip app.jar Procfile
 
-      # 5. Desplegar en AWS Elastic Beanstalk
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v21
         with:
@@ -42,4 +36,4 @@ jobs:
           environment_name: Apispringboot-env
           version_label: "ver-${{ github.sha }}"
           region: us-east-1
-          deployment_package: deploy.zip # Usamos el zip creado arriba
+          deployment_package: deploy.zip
