@@ -34,7 +34,7 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_session_token: ${{ secrets.AWS_SESSION_TOKEN }}
           application_name: api-spring-boot
-          environment_name: Apispringboot-env
+          environment_name: Api-spring-boot-env
           version_label: "ver-${{ github.sha }}"
           region: us-east-1
           deployment_package: deploy.zip
