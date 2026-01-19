@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - [cite_start]main  # Se ejecuta en cada push a main [cite: 43]
+      -main  # Se ejecuta en cada push a main
 
 jobs:
   build-and-deploy:
@@ -26,20 +26,20 @@ jobs:
         run: ./mvnw clean package
 
       # 4. Preparar artefacto para Elastic Beanstalk (CD)
-      # El requisito pide un deploy.zip con app.jar y Procfile [cite: 50]
+      # El requisito pide un deploy.zip con app.jar y Procfile
       - name: Generate Deployment Package
         run: |
           mv target/*.jar app.jar  # Renombramos el jar generado a app.jar
           zip -r deploy.zip app.jar Procfile # Creamos el zip requerido
 
-      # 5. Desplegar en AWS Elastic Beanstalk [cite: 49, 53]
+      # 5. Desplegar en AWS Elastic Beanstalk
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v21
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: api-spring-boot # El nombre que pusiste en AWS
-          environment_name: Apispringboot-env # El nombre exacto de tu entorno AWS
+          application_name: api-spring-boot
+          environment_name: Apispringboot-env
           version_label: "ver-${{ github.sha }}"
-          region: us-east-1 # Tu región (ej. us-east-1, eu-west-1)
+          region: us-east-1
           deployment_package: deploy.zip # Usamos el zip creado arriba
